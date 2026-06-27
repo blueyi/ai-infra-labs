@@ -1,4 +1,5 @@
 .venv/
+.venv-sys/
 __pycache__/
 *.pyc
 *.so
@@ -8,6 +9,7 @@ ckpt_fsdp/
 mlruns/
 mlruns_lite/
 mlflow.db
+model_registry.json
 results/
 *.png
 loss_curve.png
@@ -17,3 +19,9 @@ trace.json
 *.egg-info/
 build/
 dist/
+.hf_cache/
+*.log
+qwen0.5b-*/
+*.ll
+driver.ll
+demo.opt.ll

@@ -1,9 +1,9 @@
-import asyncio, time
+import asyncio, time, os
 from openai import AsyncOpenAI
 
 client = AsyncOpenAI(base_url="http://localhost:8000/v1", api_key="EMPTY")
 MODEL = "Qwen/Qwen2.5-0.5B-Instruct"
-N, CONCURRENCY = 200, 50          # 总请求数 / 并发数
+N, CONCURRENCY = int(os.environ.get("VLLM_BENCH_N", "40")), int(os.environ.get("VLLM_BENCH_CONC", "8"))
 PROMPT = "用三句话解释什么是分页式 KV Cache。"
 
 async def one_req(sem, latencies):

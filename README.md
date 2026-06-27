@@ -16,9 +16,18 @@ pip install -r requirements.txt
 # Smoke test environment
 python L0-foundations/hands-on-environment-baseline/hello_infra.py
 
-# Run all verifiable labs (GPU-aware skip for multi-GPU / Docker-only)
+# Run all verifiable labs (32 core + 7 optional service labs)
 python scripts/run_all_labs.py
 cat results/lab_results.json
+cat VERIFICATION.md
+```
+
+**Heavy labs (AWQ / vLLM)** need a second venv with system Python 3.12 (has `lzma`):
+
+```bash
+uv venv --python /usr/bin/python3 .venv-sys && source .venv-sys/bin/activate
+uv pip install torch --index-url https://download.pytorch.org/whl/cu130
+uv pip install vllm transformers autoawq gptqmodel torchvision bitsandbytes
 ```
 
 ## Layout
@@ -44,7 +53,9 @@ tools/                   # extract_from_mdx.py, normalize_labs.py
 | `train_zero.py` | GPU; run with `deepspeed --num_gpus=1` on single-GPU machines |
 | `ddp_demo.py` / `tp_demo.py` | 2 processes via `torchrun` (CPU gloo OK) |
 | `hnsw_bench.py` | Docker Qdrant on `:6333` |
-| AWQ/GPTQ/vLLM | Optional; install transformers/autoawq/vllm separately |
+| AWQ/GPTQ/vLLM | `.venv-sys` (Python 3.12); see `run_quant_lab.sh` / `run_vllm_lab.sh` |
+| LLVM Pass | Docker `silkeh/clang:20` via `run_llvm_pass.sh` |
+| kind + Volcano | `run_kind_gang.sh` (~10 min) |
 
 ## Regenerate from docs
 

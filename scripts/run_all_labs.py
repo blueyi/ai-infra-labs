@@ -91,6 +91,58 @@ def run_one(lab: Lab) -> dict:
     return out
 
 
+def run_shell_lab(lab: Lab) -> dict:
+    """Run a bash wrapper script (optional labs)."""
+    out: dict = {"id": lab.id, "status": "unknown", "duration_s": 0.0}
+    if lab.needs_docker and not has_cmd("docker"):
+        out["status"] = "skip"
+        out["reason"] = "docker not installed"
+        return out
+    if lab.needs_gpu and not has_gpu():
+        out["status"] = "skip"
+        out["reason"] = "no GPU"
+        return out
+    script = lab.cwd / lab.cmd[0]
+    if not script.is_file():
+        out["status"] = "skip"
+        out["reason"] = f"missing {script.name}"
+        return out
+    env = {**os.environ, **lab.env}
+    t0 = time.time()
+    try:
+        proc = subprocess.run(
+            ["bash", str(script)], cwd=lab.cwd, env=env, check=False,
+            capture_output=True, text=True, timeout=lab.timeout,
+        )
+        out["duration_s"] = round(time.time() - t0, 2)
+        out["stdout"] = proc.stdout[-4000:]
+        out["stderr"] = proc.stderr[-2000:]
+        out["returncode"] = proc.returncode
+        out["status"] = "pass" if proc.returncode == 0 else "fail"
+    except subprocess.TimeoutExpired:
+        out["status"] = "fail"
+        out["reason"] = f"timeout>{lab.timeout}s"
+        out["duration_s"] = round(time.time() - t0, 2)
+    except Exception as e:
+        out["status"] = "fail"
+        out["reason"] = str(e)
+        out["duration_s"] = round(time.time() - t0, 2)
+    return out
+
+
+def optional_labs() -> list[Lab]:
+    L = Lab
+    return [
+        L("L1.6 kind_gang", ["run_kind_gang.sh"], ROOT / "L1-compute-orchestration/resource-scheduling-and-orchestration", timeout=900, needs_docker=True),
+        L("L3.5 llvm_pass", ["run_llvm_pass.sh"], ROOT / "L3-training/hardcore-compiler-llvm-mlir-practice", timeout=300, needs_docker=True),
+        L("L3.6 elastic_demo", ["run_elastic_demo.sh"], ROOT / "L3-training/large-cluster-elastic-fault-tolerance", timeout=120, needs_gpu=True),
+        L("L4.1 quant_bench", ["run_quant_lab.sh"], ROOT / "L4-inference-serving/inference-acceleration-mechanisms", timeout=3600, needs_gpu=True, env={"VENV": str(ROOT / ".venv-sys")}),
+        L("L4.2 vllm_serve", ["run_vllm_lab.sh"], ROOT / "L4-inference-serving/inference-server-and-runtime", timeout=900, needs_gpu=True, env={"VENV": str(ROOT / ".venv-sys")}),
+        L("L5.5 obs_stack", ["run_obs_stack.sh"], ROOT / "L5-mlops-llmops/observability-and-sre", timeout=600, needs_docker=True),
+        L("L5.6 promote_best", [sys.executable, "promote_best.py"], ROOT / "L5-mlops-llmops/experiment-and-model-management", timeout=60),
+    ]
+
+
 def labs() -> list[Lab]:
     py = sys.executable
     L = Lab
@@ -178,6 +230,13 @@ def main() -> int:
             results.append({"id": lab.id, "status": "pass" if rr.returncode == 0 else "fail", "stdout": rr.stdout, "stderr": rr.stderr})
             continue
         results.append(run_one(lab))
+
+    # Optional / service labs (shell wrappers with captured logs)
+    for olab in optional_labs():
+        if olab.cmd[0].endswith(".py"):
+            results.append(run_one(olab))
+        else:
+            results.append(run_shell_lab(olab))
 
     RESULTS.write_text(json.dumps(results, indent=2, ensure_ascii=False), encoding="utf-8")
 
