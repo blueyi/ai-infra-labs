@@ -1,0 +1,13 @@
+# prometheus.yml
+global:
+  scrape_interval: 5s          # 每 5s 拉一次
+  evaluation_interval: 5s      # 每 5s 评估一次告警规则
+
+rule_files:
+  - /etc/prometheus/alert_rules.yml
+
+scrape_configs:
+  - job_name: "mock-infer"
+    static_configs:
+      # host.docker.internal 让容器访问宿主机上的 python 服务
+      - targets: ["host.docker.internal:8000"]

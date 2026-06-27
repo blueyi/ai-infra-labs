@@ -1,0 +1,11 @@
+{
+  "version": "v2",
+  "weights": {
+    "退款": "negative",
+    "差评": "negative",
+    "垃圾": "negative",
+    "好评": "positive",
+    "满意": "positive",
+    "推荐": "positive"
+  }
+}

@@ -1,0 +1,7 @@
+[
+  {"text": "申请退款太麻烦了", "label": "negative"},
+  {"text": "客服很满意，强烈推荐", "label": "positive"},
+  {"text": "东西是垃圾", "label": "negative"},
+  {"text": "好评返现，体验不错", "label": "positive"},
+  {"text": "服务还行没差评", "label": "positive"}
+]

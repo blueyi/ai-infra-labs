@@ -1,0 +1,16 @@
+# alert_rules.yml —— SLO: 99% 请求 P99 延迟应 < 200ms
+groups:
+  - name: slo-latency
+    rules:
+      # 先用录制规则算出近 1 分钟的 P99（单位:秒）
+      - record: job:infer_latency:p99_1m
+        expr: histogram_quantile(0.99, sum(rate(infer_request_latency_seconds_bucket[1m])) by (le))
+
+      - alert: InferP99SLOBreach
+        expr: job:infer_latency:p99_1m > 0.2     # 阈值 200ms
+        for: 30s                                  # 持续 30s 才告警，避免抖动
+        labels:
+          severity: page
+        annotations:
+          summary: "推理 P99 延迟突破 SLO"
+          description: "近 1 分钟 P99 = {{ $value }}s，已超过 200ms 阈值，正在消耗 Error Budget。"

@@ -1,0 +1,24 @@
+# gang-job.yaml
+apiVersion: batch.volcano.sh/v1alpha1
+kind: Job
+metadata:
+  name: dist-train-demo
+spec:
+  minAvailable: 6          # Gang：必须 6 个 Pod 同时就绪才整体调度
+  schedulerName: volcano   # 关键：交给 Volcano 调度，而非默认调度器
+  queue: default
+  tasks:
+    - replicas: 6
+      name: worker
+      template:
+        spec:
+          containers:
+            - name: trainer
+              image: busybox:1.36
+              command: ["sh", "-c", "echo gang-member-up && sleep 600"]
+              resources:
+                requests:
+                  nvidia.com/gpu: 1   # 每个 Worker 要 1 张（伪造）GPU
+                limits:
+                  nvidia.com/gpu: 1
+          restartPolicy: Never

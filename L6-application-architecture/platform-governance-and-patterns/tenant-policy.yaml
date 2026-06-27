@@ -1,0 +1,15 @@
+# tenant-policy.yaml —— 多租户隔离策略声明
+tenants:
+  tenant-a:
+    quota: { max_requests: 3 }          # 硬配额：最多 3 次请求
+    roles: [reader, invoker]            # 拥有的角色
+    allowed_models: [llama-7b]          # 可访问的模型（资源隔离）
+  tenant-b:
+    quota: { max_requests: 5 }
+    roles: [reader]                     # 只读，无 invoker 权限
+    allowed_models: [llama-13b]
+
+# RBAC：角色 -> 允许的动作（最小权限原则）
+rbac:
+  reader:  [list_models]
+  invoker: [list_models, invoke]        # 只有 invoker 能真正推理

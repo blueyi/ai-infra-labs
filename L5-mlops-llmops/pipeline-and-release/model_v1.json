@@ -1,0 +1,38 @@
+# scripts/validate_model.py
+import json, sys, pathlib
+
+THRESHOLD = 0.80  # 精度门禁：低于 80% 即阻断发布
+
+def load(p):
+    return json.loads(pathlib.Path(p).read_text(encoding="utf-8"))
+
+def predict(text, weights):
+    # 极简规则推理：命中任一关键词即取其标签，默认 positive
+    for kw, label in weights.items():
+        if kw in text:
+            return label
+    return "positive"
+
+def main():
+    model = load("model.json")
+    weights = model["weights"]
+    eval_set = load("scripts/eval_set.json")
+
+    # 1) Smoke Test：模型能正常加载并产出合法输出
+    assert weights, "模型权重为空，加载失败"
+    out = predict("好评", weights)
+    assert out in ("positive", "negative"), f"非法输出: {out}"
+    print(f"[smoke] OK  model.version={model['version']}")
+
+    # 2) 精度门禁：在评测集上算准确率
+    correct = sum(predict(s["text"], weights) == s["label"] for s in eval_set)
+    acc = correct / len(eval_set)
+    print(f"[eval ] accuracy={acc:.2%}  threshold={THRESHOLD:.0%}")
+
+    if acc < THRESHOLD:
+        print(f"::error::精度 {acc:.2%} 低于门禁 {THRESHOLD:.0%}，阻断发布 ❌")
+        sys.exit(1)  # 非零退出码 → CI 失败 → 不会进入发布步骤
+    print("[gate ] 通过质量门禁 ✅")
+
+if __name__ == "__main__":
+    main()

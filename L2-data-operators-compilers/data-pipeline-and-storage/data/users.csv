@@ -1,0 +1,6 @@
+id,age,country,email
+1,25,CN,alice@example.com
+2,30,US,bob@example.com
+3,28,JP,carol@example.com
+4,35,DE,dave@example.com
+5,22,CN,eve@example.com

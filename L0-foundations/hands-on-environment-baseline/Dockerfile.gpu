@@ -1,0 +1,17 @@
+# Dockerfile.gpu —— 基于 CUDA 运行时镜像
+FROM nvidia/cuda:12.1.1-runtime-ubuntu22.04
+
+WORKDIR /app
+
+# 装 Python 3.11 与 pip
+RUN apt-get update && apt-get install -y --no-install-recommends \
+        python3.11 python3-pip && \
+    rm -rf /var/lib/apt/lists/*
+
+# 装匹配 CUDA 12.1 的 torch wheel（cu121）
+RUN pip3 install --no-cache-dir \
+    torch --index-url https://download.pytorch.org/whl/cu121
+
+COPY hello_infra.py /app/hello_infra.py
+
+CMD ["python3", "hello_infra.py"]
