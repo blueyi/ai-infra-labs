@@ -7,6 +7,7 @@ gemm
 ckpt_fsdp/
 mlruns/
 mlruns_lite/
+mlflow.db
 results/
 *.png
 loss_curve.png
