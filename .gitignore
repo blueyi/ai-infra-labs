@@ -25,3 +25,6 @@ qwen0.5b-*/
 *.ll
 driver.ll
 demo.opt.ll
+*.onnx
+*.onnx.data
+tiny_lm.onnx*

@@ -1,32 +1,42 @@
 # ai-infra-labs — layered requirements (match ai-infra-docs L0.6 baseline)
-# Install: pip install -r requirements.txt
-# GPU path (CUDA 11.7+): pip install torch --index-url https://download.pytorch.org/whl/cu118
+# Install PyTorch first (pick ONE wheel matching your driver):
+#   pip install torch --index-url https://download.pytorch.org/whl/cu126   # CUDA 12.6 (production stable)
+#   pip install torch --index-url https://download.pytorch.org/whl/cu130   # CUDA 13.0 (newer GPUs / verified labs)
+# Then: pip install -r requirements.txt
 
 # --- L0/L1 baseline ---
-numpy>=1.24
-scikit-learn>=1.3
-matplotlib>=3.7
-pybind11>=2.11
-pandas>=2.0
+numpy>=1.26
+scikit-learn>=1.4
+matplotlib>=3.8
+pybind11>=2.12
+pandas>=2.1
 
 # --- L2 ---
-triton>=2.0; platform_system=="Linux"
+triton>=3.0; platform_system=="Linux"
+onnx>=1.16
+onnxscript>=0.1.0
+onnxruntime>=1.19
 
 # --- L3 (optional multi-GPU) ---
-deepspeed>=0.14
+deepspeed>=0.16
 
 # --- L4/L5 ---
-fastapi>=0.110
-uvicorn[standard]>=0.27
-pydantic>=2.0
-mlflow>=2.10
-prometheus-client>=0.19
-sentence-transformers>=2.5
-qdrant-client>=1.9
+fastapi>=0.115
+uvicorn[standard]>=0.30
+pydantic>=2.7
+mlflow>=2.18
+prometheus-client>=0.21
+sentence-transformers>=3.0
+qdrant-client>=1.12
+opentelemetry-api>=1.27
+opentelemetry-sdk>=1.27
+ray[default]>=2.37
 
-# --- L4 heavy (install separately if needed; large downloads) ---
-# transformers>=4.40
+# --- L4 heavy (install in .venv-sys with Python 3.12) ---
+# transformers>=4.46
 # autoawq>=0.2
-# auto-gptq>=0.7
-# vllm>=0.6
-# openai>=1.0
+# gptqmodel>=2.0
+# optimum>=1.23
+# torchvision
+# vllm>=0.8
+# bitsandbytes>=0.45

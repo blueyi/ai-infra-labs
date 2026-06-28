@@ -1,4 +1,4 @@
-"""NF4 fallback when auto-gptq is unavailable — still demonstrates INT4 memory savings."""
+"""NF4 fallback when gptqmodel/AWQ unavailable — still demonstrates INT4 memory savings."""
 import time
 import torch
 from transformers import AutoModelForCausalLM, AutoTokenizer, BitsAndBytesConfig

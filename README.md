@@ -26,7 +26,7 @@ pip install -r requirements.txt
 # Smoke test environment
 python L0-foundations/hands-on-environment-baseline/hello_infra.py
 
-# Run all verifiable labs (32 core + 7 optional service labs)
+# Run all verifiable labs (48 core + 8 optional service labs)
 python scripts/run_all_labs.py
 cat results/lab_results.json
 cat VERIFICATION.md
@@ -44,11 +44,11 @@ uv pip install vllm transformers autoawq gptqmodel optimum torchvision bitsandby
 
 ```
 L0-foundations/          # NumPy MLP, pybind11, DataLoader, hello_infra
-L1-compute-orchestration/  # GEMM TC benchmark, chip compare, checkpoint I/O
-L2-data-operators-compilers/  # CUDA GEMM, Triton, torch.compile, ETL, HNSW
+L1-compute-orchestration/  # GEMM TC, K8s/kind, NUMA, Ray, checkpoint I/O
+L2-data-operators-compilers/  # CUDA, Triton, compile, ETL, sharding, stream embed, HNSW
 L3-training/             # DDP, TP, FSDP, DeepSpeed ZeRO, LLVM Pass, elastic
-L4-inference-serving/    # AWQ/GPTQ quant, vLLM client, routing gateway
-L5-mlops-llmops/         # MLflow, guardrails, CI gate, observability stack
+L4-inference-serving/    # AWQ/GPTQ, vLLM, ONNX/TRT path, routing gateway
+L5-mlops-llmops/         # MLflow, guardrails, CI gate, obs stack, OTel tracing
 L6-application-architecture/  # ReAct agent, RAG eval, multi-tenant gateway, UniIR
 scripts/                 # run_all_labs.py
 tools/                   # extract_from_mdx.py, normalize_labs.py
@@ -56,7 +56,7 @@ tools/                   # extract_from_mdx.py, normalize_labs.py
 
 ## Hardware notes (verified on RTX 3060 Laptop 6GB)
 
-See [VERIFICATION.md](./VERIFICATION.md) for full **39/39 pass** results.
+See [VERIFICATION.md](./VERIFICATION.md) for full lab results (RTX 3060 6GB baseline).
 
 | Lab | Requirement |
 |-----|-------------|

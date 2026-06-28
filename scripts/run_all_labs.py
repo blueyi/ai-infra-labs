@@ -134,12 +134,13 @@ def optional_labs() -> list[Lab]:
     L = Lab
     return [
         L("L1.6 kind_gang", ["run_kind_gang.sh"], ROOT / "L1-compute-orchestration/resource-scheduling-and-orchestration", timeout=900, needs_docker=True),
+        L("L1.7 k8s_basics", ["run_k8s_basics.sh"], ROOT / "L1-compute-orchestration/kubernetes-core-pods-services-ingress", timeout=600, needs_docker=True),
         L("L3.5 llvm_pass", ["run_llvm_pass.sh"], ROOT / "L3-training/hardcore-compiler-llvm-mlir-practice", timeout=300, needs_docker=True),
         L("L3.6 elastic_demo", ["run_elastic_demo.sh"], ROOT / "L3-training/large-cluster-elastic-fault-tolerance", timeout=120, needs_gpu=True),
         L("L4.1 quant_bench", ["run_quant_lab.sh"], ROOT / "L4-inference-serving/inference-acceleration-mechanisms", timeout=3600, needs_gpu=True, env={"VENV": str(ROOT / ".venv-sys")}),
         L("L4.2 vllm_serve", ["run_vllm_lab.sh"], ROOT / "L4-inference-serving/inference-server-and-runtime", timeout=900, needs_gpu=True, env={"VENV": str(ROOT / ".venv-sys")}),
         L("L5.5 obs_stack", ["run_obs_stack.sh"], ROOT / "L5-mlops-llmops/observability-and-sre", timeout=600, needs_docker=True),
-        L("L5.6 promote_best", [sys.executable, "promote_best.py"], ROOT / "L5-mlops-llmops/experiment-and-model-management", timeout=60),
+        L("L5.1 promote_best", [sys.executable, "promote_best.py"], ROOT / "L5-mlops-llmops/experiment-and-model-management", timeout=60),
     ]
 
 
@@ -158,6 +159,8 @@ def labs() -> list[Lab]:
         L("L1.3 ckpt_io", [py, "ckpt_io_lab.py"], ROOT / "L1-compute-orchestration/ai-storage-architecture-gds-checkpoint", timeout=180),
         L("L1.4 multi_region_dr", [py, "multi_region_dr_calc.py"], ROOT / "L1-compute-orchestration/multi-region-hybrid-cloud-compute-network"),
         L("L1.5 allreduce_gloo", [py, "allreduce_gloo.py"], ROOT / "L1-compute-orchestration/interconnect-topology-nvlink-ib-roce"),
+        L("L1.8 numa_bench", [py, "numa_dataloader_bench.py"], ROOT / "L1-compute-orchestration/linux-cgroups-numa-and-irq-affinity", timeout=180),
+        L("L1.10 ray_hello", [py, "ray_hello.py"], ROOT / "L1-compute-orchestration/slurm-and-ray-job-submission", timeout=120),
         L("L2.1 tiled_numpy", [py, "tiled_numpy.py"], ROOT / "L2-data-operators-compilers/cuda-programming-essentials-and-advanced"),
         L("L2.1 gemm.cu", ["nvcc", "-O3", "-arch=sm_86", "gemm.cu", "-o", "gemm"], ROOT / "L2-data-operators-compilers/cuda-programming-essentials-and-advanced", needs_gpu=True, build_cmd=None),
         L("L2.2 compile_bench", [py, "compile_bench.py"], ROOT / "L2-data-operators-compilers/dl-compiler-and-mlir-lowering", timeout=300, needs_gpu=True),
@@ -165,16 +168,21 @@ def labs() -> list[Lab]:
         L("L2.4 profile_infer", [py, "profile_infer.py"], ROOT / "L2-data-operators-compilers/operator-shape-generalization-and-profiling", needs_gpu=True, timeout=180),
         L("L2.5 flash_attn", [py, "flash_attn_triton.py"], ROOT / "L2-data-operators-compilers/sota-kernel-flashattention-moe", needs_gpu=True, timeout=300),
         L("L2.6 etl_gate", [py, "etl_with_gate.py"], ROOT / "L2-data-operators-compilers/data-pipeline-and-storage"),
+        L("L2.8 shard_demo", [py, "shard_demo.py"], ROOT / "L2-data-operators-compilers/dataset-sampling-sharding-and-curriculum"),
+        L("L2.9 stream_embed", [py, "mini_stream_embed.py"], ROOT / "L2-data-operators-compilers/streaming-etl-and-embedding-pipelines"),
         L("L2.7 hnsw_bench", [py, "hnsw_bench.py"], ROOT / "L2-data-operators-compilers/feature-store-and-vector-db", needs_docker=True, timeout=300),
         L("L3.1 ddp", ["torchrun", "--nproc_per_node=2", "ddp_demo.py"], ROOT / "L3-training/distributed-training-and-3d-parallelism"),
         L("L3.1 tp", ["torchrun", "--nproc_per_node=2", "tp_demo.py"], ROOT / "L3-training/distributed-training-and-3d-parallelism"),
         L("L3.2 fsdp", ["torchrun", "--nproc_per_node=1", "fsdp_ckpt.py"], ROOT / "L3-training/mainstream-frameworks-practice", timeout=180, needs_gpu=True),
         L("L3.3 deepspeed", ["deepspeed", "--num_gpus=1", "train_zero.py"], ROOT / "L3-training/memory-optimization-and-zero", needs_gpu=True, timeout=300),
         L("L4.3 gateway", [py, "gateway.py"], ROOT / "L4-inference-serving/performance-cost-and-hybrid-deployment", timeout=30),
+        L("L4.4 onnx_export", [py, "export_tiny_lm.py"], ROOT / "L4-inference-serving/tensorrt-llm-and-onnx-runtime", timeout=120),
+        L("L4.4 ort_infer", [py, "ort_infer.py"], ROOT / "L4-inference-serving/tensorrt-llm-and-onnx-runtime", timeout=60),
         L("L5.1 bench_gemm", [py, "bench_gemm.py"], ROOT / "L5-mlops-llmops/engineering-methodology"),
         L("L5.2 mlflow_train", [py, "train_experiments.py"], ROOT / "L5-mlops-llmops/experiment-and-model-management", timeout=120),
         L("L5.3 gateway_guardrails", [py, "gateway_guardrails.py"], ROOT / "L5-mlops-llmops/llmops-specifics"),
         L("L5.4 validate_model", [py, "validate_model.py"], ROOT / "L5-mlops-llmops/pipeline-and-release"),
+        L("L5.6 otel_rag", [py, "otel_rag_demo.py"], ROOT / "L5-mlops-llmops/open-telemetry-tracing-for-llm-pipelines", timeout=60),
         L("L6.1 react_agent", [py, "react_agent_lab.py"], ROOT / "L6-application-architecture/agent-and-multi-step-reasoning"),
         L("L6.2 mock_gateway", [py, "mock_gateway.py"], ROOT / "L6-application-architecture/platform-governance-and-patterns"),
         L("L6.3 min_rag", [py, "min_rag_eval.py"], ROOT / "L6-application-architecture/rag-retrieval-augmented-generation", timeout=300),
@@ -220,6 +228,13 @@ def main() -> int:
                 "stdout": rr.stdout,
                 "stderr": rr.stderr,
             })
+            continue
+        if lab.id == "L4.4 ort_infer":
+            # ensure export ran first
+            export_dir = ROOT / "L4-inference-serving/tensorrt-llm-and-onnx-runtime"
+            if not (export_dir / "tiny_lm.onnx").is_file():
+                subprocess.run([sys.executable, "export_tiny_lm.py"], cwd=export_dir, check=True)
+            results.append(run_one(lab))
             continue
         if lab.id == "L4.3 gateway":
             # gateway is uvicorn app — run import smoke test
